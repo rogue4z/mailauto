@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Email Automation</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .email-card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .email-card h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 11px 18px;
+            border: none;
+            border-radius: 5px;
+            background: #1a73e8;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1557b0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Daily Email Automation</h1>
+    <button onclick="saveSettings()">
+    Save Email Settings
+    </button>
+
+    <!-- PAYMENT COLLECTION -->
+    <div class="email-card">
+
+        <h2>Payment Collection Report</h2>
+
+        <label>Date</label>
+        <input type="date" id="paymentDate">
+
+        <label>To</label>
+        <input type="text" id="paymentTo" placeholder="recipient@example.com">
+
+        <label>CC</label>
+        <input type="text" id="paymentCC" placeholder="cc@example.com">
+
+        <label>Subject</label>
+        <input type="text" id="paymentSubject"
+               value="Payment Collection Report">
+
+        <label>Body</label>
+        <textarea id="paymentBody">Dear Sir/Madam,
+
+Please find the payment collection report for today.
+
+Regards</textarea>
+
+        <button onclick="openPaymentEmail()">
+            Open in Gmail
+        </button>
+
+    </div>
+
+
+    <!-- PENDING SHIPMENT -->
+    <div class="email-card">
+
+        <h2>Pending Shipment Report</h2>
+
+        <label>Date</label>
+        <input type="date" id="pendingDate">
+
+        <label>To</label>
+        <input type="text" id="pendingTo" placeholder="recipient@example.com">
+
+        <label>CC</label>
+        <input type="text" id="pendingCC" placeholder="cc@example.com">
+
+        <label>Subject</label>
+        <input type="text" id="pendingSubject"
+               value="Pending Shipment Report">
+
+        <label>Body</label>
+        <textarea id="pendingBody">Dear Sir/Madam,
+
+Please find the pending shipment report for today.
+
+Regards</textarea>
+
+        <button onclick="openPendingEmail()">
+            Open in Gmail
+        </button>
+
+    </div>
+
+
+    <!-- PRE ALERT -->
+    <div class="email-card">
+
+        <h2>Pre Alert Report</h2>
+
+        <label>Date</label>
+        <input type="date" id="preAlertDate">
+
+        <label>To</label>
+        <input type="text" id="preAlertTo" placeholder="recipient@example.com">
+
+        <label>CC</label>
+        <input type="text" id="preAlertCC" placeholder="cc@example.com">
+
+        <label>Subject</label>
+        <input type="text" id="preAlertSubject"
+               value="Pre Alert Report">
+
+        <label>Body</label>
+        <textarea id="preAlertBody">Dear Sir/Madam,
+
+Please find the pre alert report for today.
+
+Regards</textarea>
+
+        <button onclick="openPreAlertEmail()">
+            Open in Gmail
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Set today's date automatically
+    function setToday() {
+
+        const today = new Date();
+
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        const day = String(today.getDate()).padStart(2, "0");
+
+        const date = `${year}-${month}-${day}`;
+
+        document.getElementById("paymentDate").value = date;
+        document.getElementById("pendingDate").value = date;
+        document.getElementById("preAlertDate").value = date;
+    }
+
+
+    // Convert date into DD/MM/YYYY
+    function formatDate(dateValue) {
+
+        const parts = dateValue.split("-");
+
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+
+
+    // Open Gmail
+    function openGmail(to, cc, subject, body) {
+
+        const gmailURL =
+            "https://mail.google.com/mail/?view=cm" +
+            "&fs=1" +
+            "&to=" + encodeURIComponent(to) +
+            "&cc=" + encodeURIComponent(cc) +
+            "&su=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(body);
+
+        window.open(gmailURL, "_blank");
+    }
+
+
+    // Payment Collection
+    function openPaymentEmail() {
+
+        const date = formatDate(
+            document.getElementById("paymentDate").value
+        );
+
+        const to = document.getElementById("paymentTo").value;
+        const cc = document.getElementById("paymentCC").value;
+        const subject = document.getElementById("paymentSubject").value;
+
+        let body =
+            document.getElementById("paymentBody").value;
+
+        body = body.replaceAll("{{DATE}}", date);
+
+        openGmail(to, cc, subject, body);
+    }
+
+
+    // Pending Shipment
+    function openPendingEmail() {
+
+        const date = formatDate(
+            document.getElementById("pendingDate").value
+        );
+
+        const to = document.getElementById("pendingTo").value;
+        const cc = document.getElementById("pendingCC").value;
+        const subject = document.getElementById("pendingSubject").value;
+
+        let body =
+            document.getElementById("pendingBody").value;
+
+        body = body.replaceAll("{{DATE}}", date);
+
+        openGmail(to, cc, subject, body);
+    }
+
+
+    // Pre Alert
+    function openPreAlertEmail() {
+
+        const date = formatDate(
+            document.getElementById("preAlertDate").value
+        );
+
+        const to = document.getElementById("preAlertTo").value;
+        const cc = document.getElementById("preAlertCC").value;
+        const subject = document.getElementById("preAlertSubject").value;
+
+        let body =
+            document.getElementById("preAlertBody").value;
+
+        body = body.replaceAll("{{DATE}}", date);
+
+        openGmail(to, cc, subject, body);
+    }
+
+
+    // Run when page loads
+    // Save all email settings
+function saveSettings() {
+
+    const settings = {
+        paymentTo: document.getElementById("paymentTo").value,
+        paymentCC: document.getElementById("paymentCC").value,
+        paymentSubject: document.getElementById("paymentSubject").value,
+        paymentBody: document.getElementById("paymentBody").value,
+
+        pendingTo: document.getElementById("pendingTo").value,
+        pendingCC: document.getElementById("pendingCC").value,
+        pendingSubject: document.getElementById("pendingSubject").value,
+        pendingBody: document.getElementById("pendingBody").value,
+
+        preAlertTo: document.getElementById("preAlertTo").value,
+        preAlertCC: document.getElementById("preAlertCC").value,
+        preAlertSubject: document.getElementById("preAlertSubject").value,
+        preAlertBody: document.getElementById("preAlertBody").value
+    };
+
+    localStorage.setItem(
+        "emailAutomationSettings",
+        JSON.stringify(settings)
+    );
+
+    alert("Settings saved successfully.");
+}
+
+
+// Load saved email settings
+function loadSettings() {
+
+    const saved =
+        localStorage.getItem("emailAutomationSettings");
+
+    if (!saved) {
+        return;
+    }
+
+    const settings = JSON.parse(saved);
+
+    document.getElementById("paymentTo").value =
+        settings.paymentTo;
+
+    document.getElementById("paymentCC").value =
+        settings.paymentCC;
+
+    document.getElementById("paymentSubject").value =
+        settings.paymentSubject;
+
+    document.getElementById("paymentBody").value =
+        settings.paymentBody;
+
+
+    document.getElementById("pendingTo").value =
+        settings.pendingTo;
+
+    document.getElementById("pendingCC").value =
+        settings.pendingCC;
+
+    document.getElementById("pendingSubject").value =
+        settings.pendingSubject;
+
+    document.getElementById("pendingBody").value =
+        settings.pendingBody;
+
+
+    document.getElementById("preAlertTo").value =
+        settings.preAlertTo;
+
+    document.getElementById("preAlertCC").value =
+        settings.preAlertCC;
+
+    document.getElementById("preAlertSubject").value =
+        settings.preAlertSubject;
+
+    document.getElementById("preAlertBody").value =
+        settings.preAlertBody;
+}
+
+
+// Run when page loads
+setToday();
+loadSettings();
+
+</script>
+
+</body>
+</html>
